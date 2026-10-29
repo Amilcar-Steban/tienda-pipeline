@@ -14,7 +14,9 @@ Todas las acciones están fijadas por SHA; Dependabot (`.github/dependabot.yml`)
 ## 1 · Repositorio
 
 1. Sube este proyecto a un repositorio de GitHub y cambia `tu-usuario` en `.github/CODEOWNERS`.
-2. Settings → Actions → General → Workflow permissions: **Read repository contents**.
+2. Settings → Actions → General → Workflow permissions: **Read repository contents** y marca
+   **Allow GitHub Actions to create and approve pull requests** (release-please abre un PR de release;
+   sin esta casilla falla con "GitHub Actions is not permitted to create or approve pull requests").
 3. Settings → Rules → New ruleset para `main`:
    - Require a pull request before merging (1 aprobación, y "Require review from Code Owners").
    - Require status checks: `calidad`, `pruebas`, `seguridad`, `build (api)`, `build (frontend)`.
