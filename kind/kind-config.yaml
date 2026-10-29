@@ -1,0 +1,12 @@
+# kind create cluster --name lab --config kind/kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0
+    extraPortMappings: # NodePort 30080 accesible en localhost:30080 (laboratorio del módulo 5)
+      - { containerPort: 30080, hostPort: 30080 }
+  - role: worker
+    image: kindest/node:v1.37.0
+  - role: worker
+    image: kindest/node:v1.37.0

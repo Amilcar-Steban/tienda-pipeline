@@ -73,6 +73,13 @@ ECS Fargate (ARM64) y el frontend en S3 + CloudFront con OIDC, sin claves de acc
 La API acepta `DATABASE_URL` o las piezas `DB_HOST`, `DB_USER`, `DB_PASSWORD`… que
 inyecta ECS desde el secreto gestionado por RDS.
 
+## En Kubernetes (Fase 5)
+
+[`chart/tienda`](chart/tienda) es el chart de Helm de la tienda (Gateway API, HPA, PDB,
+NetworkPolicies, Pod Security `restricted`). `kind/crear-lab.sh` monta un clúster local para
+probarlo y `eks/main.tf` es la capa EKS del repositorio de infraestructura. El workflow
+`Kubernetes` valida el chart en cada PR. Detalles en [KUBERNETES.md](KUBERNETES.md).
+
 ## Qué aprendí
 
 (Tamaño de cada imagen antes y después, resultado de Trivy, problemas que encontraste.)
