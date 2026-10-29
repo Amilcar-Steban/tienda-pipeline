@@ -65,6 +65,14 @@ Prográmalo con un timer de systemd en el servidor, como en la Fase 0.
   archivos en solo lectura, sin capabilities y con `no-new-privileges`.
 - Logs con el driver `local` y rotación, para que no llenen el disco.
 
+## En AWS (Fase 3)
+
+La carpeta [`aws/`](aws/README.md) tiene los scripts de primer día y de costes, las
+políticas IAM y la task definition de ECS. El workflow `Deploy AWS` despliega la API en
+ECS Fargate (ARM64) y el frontend en S3 + CloudFront con OIDC, sin claves de acceso.
+La API acepta `DATABASE_URL` o las piezas `DB_HOST`, `DB_USER`, `DB_PASSWORD`… que
+inyecta ECS desde el secreto gestionado por RDS.
+
 ## Qué aprendí
 
 (Tamaño de cada imagen antes y después, resultado de Trivy, problemas que encontraste.)

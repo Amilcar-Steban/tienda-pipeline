@@ -48,3 +48,15 @@ def test_pedido_sin_stock_suficiente(client):
 def test_cantidad_invalida(client):
     r = client.post("/api/pedidos", json={"producto_id": 1, "cantidad": 0})
     assert r.status_code == 422
+
+
+def test_database_url_por_piezas(monkeypatch):
+    from app.main import database_url
+
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.setenv("DB_USER", "app")
+    monkeypatch.setenv("DB_PASSWORD", "p@ss:word/")
+    monkeypatch.setenv("DB_HOST", "tienda.abc123.us-east-1.rds.amazonaws.com")
+    assert database_url() == (
+        "postgresql://app:p%40ss%3Aword%2F@tienda.abc123.us-east-1.rds.amazonaws.com:5432/app?sslmode=require"
+    )

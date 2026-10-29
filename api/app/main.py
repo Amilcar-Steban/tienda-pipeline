@@ -3,13 +3,29 @@
 import json
 import os
 from contextlib import asynccontextmanager
+from urllib.parse import quote
 
 import redis
 from fastapi import FastAPI, HTTPException
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel, Field
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+
+def database_url() -> str:
+    """DATABASE_URL completa (Compose, CI) o por piezas (AWS: la contraseña la inyecta ECS desde el
+    secreto que gestiona y rota RDS, que es un JSON y no una URL)."""
+    if url := os.environ.get("DATABASE_URL"):
+        return url
+    usuario = quote(os.environ["DB_USER"], safe="")
+    clave = quote(os.environ["DB_PASSWORD"], safe="")
+    host = os.environ["DB_HOST"]
+    puerto = os.environ.get("DB_PORT", "5432")
+    nombre = os.environ.get("DB_NAME", "app")
+    ssl = os.environ.get("DB_SSLMODE", "require")
+    return f"postgresql://{usuario}:{clave}@{host}:{puerto}/{nombre}?sslmode={ssl}"
+
+
+DATABASE_URL = database_url()
 REDIS_URL = os.environ.get("REDIS_URL", "redis://cache:6379/0")
 VERSION = os.environ.get("APP_VERSION", "dev")
 
