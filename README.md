@@ -80,6 +80,16 @@ NetworkPolicies, Pod Security `restricted`). `kind/crear-lab.sh` monta un clúst
 probarlo y `eks/main.tf` es la capa EKS del repositorio de infraestructura. El workflow
 `Kubernetes` valida el chart en cada PR. Detalles en [KUBERNETES.md](KUBERNETES.md).
 
+## Observable (Fase 7)
+
+[`observabilidad/`](observabilidad/README.md) añade a la pila de Compose OpenTelemetry (sin tocar
+el código de la API), el Collector, Prometheus con alertas de burn rate, Alertmanager, Loki, Tempo
+y Grafana con el dashboard como código:
+
+```bash
+docker compose -f compose.yaml -f observabilidad/compose.yaml up -d --build   # Grafana: http://localhost:3000
+```
+
 ## Qué aprendí
 
 (Tamaño de cada imagen antes y después, resultado de Trivy, problemas que encontraste.)
