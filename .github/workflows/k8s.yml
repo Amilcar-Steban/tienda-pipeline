@@ -46,7 +46,10 @@ jobs:
           helm lint chart/tienda -f chart/tienda/values-prod.yaml
 
       - name: Pruebas unitarias del chart
-        run: docker run --rm -v "$PWD/chart":/apps helmunittest/helm-unittest:4.3.0-1.2.1 tienda
+        run: |
+          # Helm 4 exige firma en los plugins; helm-unittest no la publica
+          helm plugin install https://github.com/helm-unittest/helm-unittest --version v1.2.1 --verify=false
+          helm unittest chart/tienda
 
       - name: Renderizar
         run: |
