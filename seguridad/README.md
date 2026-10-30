@@ -24,7 +24,7 @@ docker run --rm -v "$PWD/seguridad/falco":/r falcosecurity/falco:0.45.2 \
 ## Verificar una imagen publicada
 
 ```bash
-IMG=ghcr.io/amilcar-steban/tienda-api:0.3.0
+IMG=ghcr.io/amilcar-steban/tienda-api:0.5.0
 cosign verify "$IMG" \
   --certificate-identity https://github.com/Amilcar-Steban/tienda-pipeline/.github/workflows/image.yml@refs/heads/main \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
