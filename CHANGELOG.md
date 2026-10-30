@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.3.0...v0.4.0) (2026-10-30)
+
+
+### Features
+
+* **plataforma:** catálogo de Backstage, TechDocs, Crossplane y alta de equipos (Fase 9) ([ac77cbd](https://github.com/Amilcar-Steban/tienda-pipeline/commit/ac77cbd8f0a964127b232f4d9caed566abeb7630))
+
 ## [0.3.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.2.0...v0.3.0) (2026-10-30)
 
 
