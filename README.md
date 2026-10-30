@@ -90,6 +90,13 @@ y Grafana con el dashboard como código:
 docker compose -f compose.yaml -f observabilidad/compose.yaml up -d --build   # Grafana: http://localhost:3000
 ```
 
+## Segura (Fase 8)
+
+Cada imagen se firma por digest con Sigstore (keyless, sin claves) y lleva su SBOM firmado; Kyverno
+solo admite en el clúster las firmadas por el workflow `Imagen` en `main`. El workflow `Seguridad`
+ejecuta Semgrep (resultados en la pestaña Security) y prueba las políticas. Detalles en
+[`seguridad/`](seguridad/README.md) y el [modelo de amenazas](docs/modelo-amenazas.md).
+
 ## Qué aprendí
 
 (Tamaño de cada imagen antes y después, resultado de Trivy, problemas que encontraste.)

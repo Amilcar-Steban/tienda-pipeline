@@ -1,6 +1,7 @@
 """API de la tienda: productos (con caché en Redis) y pedidos (en PostgreSQL)."""
 
 import json
+import logging
 import os
 from contextlib import asynccontextmanager
 from urllib.parse import quote
@@ -28,6 +29,8 @@ def database_url() -> str:
 DATABASE_URL = database_url()
 REDIS_URL = os.environ.get("REDIS_URL", "redis://cache:6379/0")
 VERSION = os.environ.get("APP_VERSION", "dev")
+
+log = logging.getLogger("tienda")
 
 pool = ConnectionPool(DATABASE_URL, min_size=1, max_size=5, open=False)
 cache = redis.Redis.from_url(REDIS_URL, socket_timeout=1, decode_responses=True)
@@ -85,14 +88,15 @@ def productos():
         if guardado:
             return {"origen": "cache", "productos": json.loads(guardado)}
     except redis.RedisError:
-        pass  # sin caché la tienda sigue funcionando, solo más lenta
+        # Sin caché la tienda sigue funcionando, solo más lenta; pero que se sepa (logs, Fase 7)
+        log.warning("Caché no disponible: se lee de la base de datos")
     with pool.connection() as conn:
         filas = conn.execute("SELECT id, nombre, precio::float, stock FROM productos ORDER BY id").fetchall()
     datos = [{"id": i, "nombre": n, "precio": p, "stock": s} for i, n, p, s in filas]
     try:
         cache.setex("productos", 30, json.dumps(datos))
     except redis.RedisError:
-        pass
+        log.warning("Caché no disponible: no se guarda el catálogo")
     return {"origen": "base de datos", "productos": datos}
 
 
@@ -112,7 +116,7 @@ def crear_pedido(pedido: Pedido):
     try:
         cache.delete("productos")
     except redis.RedisError:
-        pass
+        log.warning("Caché no disponible: el catálogo cacheado puede tener stock antiguo durante 30 s")
     return {"id": nuevo[0], "stock_restante": fila[0]}
 
 
