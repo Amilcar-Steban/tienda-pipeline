@@ -38,13 +38,14 @@
 
 - rule: Conexion saliente inesperada de la API
   desc: >
-    La API solo habla con PostgreSQL (5432) y la caché (6379). Cualquier otra conexión
-    saliente (un minero, un servidor de control) es sospechosa.
+    La API solo habla con PostgreSQL, la caché y el Collector, todos en redes privadas. La macro
+    "outbound" de Falco ya ignora los destinos privados (RFC 1918), así que cualquier conexión que
+    llegue aquí va a Internet: un minero, un servidor de control o una fuga de datos. No hay
+    excepciones por puerto: una excepción para el 5432 dejaría sacar datos a un servidor ajeno por él.
   condition: >
     outbound and container
     and k8s.ns.name in (tienda_namespaces)
     and k8s.pod.label[app.kubernetes.io/component] = "api"
-    and not fd.sport in (5432, 6379, 53)
   output: >
     Conexión saliente de la API a %fd.sip:%fd.sport (pod=%k8s.pod.name comando=%proc.cmdline)
   priority: CRITICAL
