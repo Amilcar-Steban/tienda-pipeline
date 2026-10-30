@@ -74,7 +74,8 @@ gh variable set DEPLOY_ENABLED --body true
   Para que esa etiqueta dispare `image.yml`, release-please usa el token de la GitHub App de la Fase 6
   (los eventos creados con `GITHUB_TOKEN` no disparan otros workflows): instálala también en este repo.
 - GitOps: con la App configurada (`GITOPS_APP_ID`, `GITOPS_APP_KEY`), cada imagen de `main` actualiza
-  dev en `tienda-gitops` y abre un PR para prod (`promover.yml`).
+  dev en `tienda-gitops`, y cada release abre un PR para prod con su versión (`promover.yml`), que
+  cierra los PRs de promoción anteriores.
 - Rollback: Actions → Deploy → Run workflow → entorno y etiqueta anterior. `scripts/deploy.sh` además
   vuelve solo a la versión anterior si la nueva no queda sana.
 
