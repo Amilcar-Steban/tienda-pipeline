@@ -121,6 +121,17 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
         run: cosign attest --yes --type cyclonedx --predicate sbom.cdx.json "${IMAGE}@${DIGEST}"
 
+  # GitOps (Fase 6): dev pasa a la imagen nueva y se abre un PR para prod en tienda-gitops.
+  # Solo si la GitHub App está configurada (variable GITOPS_APP_ID y secreto GITOPS_APP_KEY).
+  promover:
+    if: github.ref == 'refs/heads/main' && vars.GITOPS_APP_ID != ''
+    needs: imagen
+    permissions:
+      contents: read
+    uses: ./.github/workflows/promover.yml
+    secrets:
+      GITOPS_APP_KEY: ${{ secrets.GITOPS_APP_KEY }}
+
   # Despliegue automático: solo desde main y cuando el despliegue está configurado
   # (variable del repositorio DEPLOY_ENABLED=true, ver PIPELINE.md). Las etiquetas v* se despliegan a mano.
   staging:

@@ -1,5 +1,5 @@
-# Solo se ejecutan las imágenes de la tienda firmadas por NUESTRO workflow Imagen, en main
-# (firma keyless de Sigstore: no hay claves que robar), y con procedencia SLSA.
+# Solo se ejecutan las imágenes de la tienda firmadas por NUESTRO workflow Imagen, en main o en una
+# etiqueta de versión vX.Y.Z (firma keyless de Sigstore: no hay claves que robar), y con su SBOM firmado.
 apiVersion: policies.kyverno.io/v1
 kind: ImageValidatingPolicy
 metadata:
@@ -27,7 +27,8 @@ spec:
         keyless:
           identities:
             - issuer: https://token.actions.githubusercontent.com
-              subject: https://github.com/Amilcar-Steban/tienda-pipeline/.github/workflows/image.yml@refs/heads/main
+              # main (sha-…) o una etiqueta de release (X.Y.Z): las dos identidades con las que firma el CI
+              subjectRegExp: '^https://github\.com/Amilcar-Steban/tienda-pipeline/\.github/workflows/image\.yml@refs/(heads/main|tags/v[0-9]+\.[0-9]+\.[0-9]+)$'
         ctlog:
           url: https://rekor.sigstore.dev
   attestations:
@@ -35,7 +36,7 @@ spec:
       intoto:
         type: https://cyclonedx.org/bom
   validations:
-    - message: "La imagen no está firmada por el workflow Imagen de tienda-pipeline en main"
+    - message: "La imagen no está firmada por el workflow Imagen de tienda-pipeline (main o una versión)"
       expression: >-
         images.containers.map(i, verifyImageSignatures(i, [attestors.ci])).all(n, n > 0)
     - message: "La imagen no tiene un SBOM firmado por nuestro CI"

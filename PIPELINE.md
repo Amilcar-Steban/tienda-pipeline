@@ -71,8 +71,10 @@ gh variable set DEPLOY_ENABLED --body true
 - Abre un PR: `ci.yml` lo valida en unos minutos.
 - Fusiónalo: `image.yml` publica `sha-1234abc` y `main`, despliega en staging y espera tu aprobación para producción.
 - Versiones: release-please mantiene un PR de release; al fusionarlo crea la etiqueta `vX.Y.Z` y se publica la imagen `X.Y.Z`.
-  Para que esa etiqueta dispare `image.yml`, release-please necesita el token de una GitHub App
-  (los eventos creados con `GITHUB_TOKEN` no disparan otros workflows).
+  Para que esa etiqueta dispare `image.yml`, release-please usa el token de la GitHub App de la Fase 6
+  (los eventos creados con `GITHUB_TOKEN` no disparan otros workflows): instálala también en este repo.
+- GitOps: con la App configurada (`GITOPS_APP_ID`, `GITOPS_APP_KEY`), cada imagen de `main` actualiza
+  dev en `tienda-gitops` y abre un PR para prod (`promover.yml`).
 - Rollback: Actions → Deploy → Run workflow → entorno y etiqueta anterior. `scripts/deploy.sh` además
   vuelve solo a la versión anterior si la nueva no queda sana.
 
