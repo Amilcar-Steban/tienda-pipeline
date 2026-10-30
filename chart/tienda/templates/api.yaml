@@ -29,6 +29,10 @@ spec:
       {{- include "tienda.selector" $sel | nindent 6 }}
   template:
     metadata:
+      {{- if .Values.observabilidad.enabled }}
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: {{ .Values.observabilidad.instrumentacion | quote }}
+      {{- end }}
       labels:
         {{- include "tienda.selector" $sel | nindent 8 }}
     spec:

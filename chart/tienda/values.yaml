@@ -35,6 +35,13 @@ frontend:
     requests: { cpu: 20m, memory: 32Mi }
     limits: { memory: 64Mi }
 
+# Observabilidad en Kubernetes (Fase 7): el OpenTelemetry Operator inyecta la instrumentación en la
+# API (sin cambiar su imagen) y la API envía métricas, logs y trazas al Collector por OTLP
+observabilidad:
+  enabled: false
+  instrumentacion: observabilidad/tienda # <namespace>/<nombre> del recurso Instrumentation
+  namespaceCollector: observabilidad # la NetworkPolicy abre la salida hacia él (4317 y 4318)
+
 # Entrada HTTP con Gateway API
 gateway:
   crear: false # true: el chart crea su propio Gateway (laboratorio); false: usa uno compartido

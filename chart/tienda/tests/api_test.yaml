@@ -51,3 +51,18 @@ tests:
       api.bd.host: ""
     asserts:
       - failedTemplate: { errorMessage: api.bd.host es obligatorio }
+
+  - it: sin observabilidad, el pod no pide instrumentación
+    template: templates/api.yaml
+    documentSelector: { path: kind, value: Deployment }
+    asserts:
+      - notExists: { path: spec.template.metadata.annotations }
+
+  - it: con observabilidad, el Operator inyecta la instrumentación de Python
+    template: templates/api.yaml
+    documentSelector: { path: kind, value: Deployment }
+    set: { observabilidad.enabled: true }
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["instrumentation.opentelemetry.io/inject-python"]
+          value: observabilidad/tienda
