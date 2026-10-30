@@ -1,5 +1,8 @@
 # EKS con la infraestructura de la Fase 4. Sustituye los valores de ejemplo por las salidas de
 # Terraform (endpoint_bd, endpoint_cache, secreto_bd_arn) o léelos en el pipeline.
+# El esquema lo migra un Job antes de cada actualización; la API arranca sin crear tablas
+migraciones:
+  job: true
 api:
   replicas: 3
   bd:

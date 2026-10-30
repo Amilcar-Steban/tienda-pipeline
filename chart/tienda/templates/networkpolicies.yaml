@@ -56,7 +56,7 @@ spec:
         - { port: {{ .Values.api.puerto }}, protocol: TCP }
         - { port: {{ .Values.frontend.puerto }}, protocol: TCP }
 ---
-# 4. La API solo sale hacia PostgreSQL, la caché y (si hay observabilidad) el Collector
+# 4. La API (y el Job de migraciones) solo salen hacia PostgreSQL, la caché y (si hay observabilidad) el Collector
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -65,8 +65,9 @@ metadata:
     {{- include "tienda.etiquetas" . | nindent 4 }}
 spec:
   podSelector:
-    matchLabels:
-      {{- include "tienda.selector" $api | nindent 6 }}
+    matchExpressions:
+      - { key: app.kubernetes.io/instance, operator: In, values: [{{ .Release.Name }}] }
+      - { key: app.kubernetes.io/component, operator: In, values: [api, migraciones] }
   policyTypes: [Egress]
   egress:
     {{- if .Values.local.enabled }}
@@ -97,7 +98,7 @@ spec:
     {{- end }}
 {{- if .Values.local.enabled }}
 ---
-# 5. (laboratorio) PostgreSQL y Valkey solo aceptan a la API
+# 5. (laboratorio) PostgreSQL y Valkey solo aceptan a la API (y PostgreSQL, al Job de migraciones)
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -112,6 +113,7 @@ spec:
   ingress:
     - from:
         - podSelector:
-            matchLabels:
-              {{- include "tienda.selector" $api | nindent 14 }}
+            matchExpressions:
+              - { key: app.kubernetes.io/instance, operator: In, values: [{{ .Release.Name }}] }
+              - { key: app.kubernetes.io/component, operator: In, values: [api, migraciones] }
 {{- end }}

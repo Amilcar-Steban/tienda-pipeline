@@ -14,6 +14,23 @@ app.kubernetes.io/instance: {{ .raiz.Release.Name }}
 app.kubernetes.io/component: {{ .componente }}
 {{- end }}
 
+{{/* Conexión a PostgreSQL: la usan la API y el Job de migraciones */}}
+{{- define "tienda.entornoBd" -}}
+- name: DB_HOST
+  value: {{ required "api.bd.host es obligatorio" .Values.api.bd.host | quote }}
+- name: DB_NAME
+  value: {{ .Values.api.bd.nombre | quote }}
+- name: DB_USER
+  value: {{ .Values.api.bd.usuario | quote }}
+- name: DB_SSLMODE
+  value: {{ .Values.api.bd.sslmode | quote }}
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.api.bd.secreto }}
+      key: password
+{{- end }}
+
 {{- define "tienda.imagen" -}}
 {{ .raiz.Values.imagen.registro }}/tienda-{{ .componente }}:{{ .etiqueta | default .raiz.Chart.AppVersion }}
 {{- end }}

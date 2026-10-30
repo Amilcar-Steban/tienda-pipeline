@@ -35,6 +35,11 @@ frontend:
     requests: { cpu: 20m, memory: 32Mi }
     limits: { memory: 64Mi }
 
+# Migraciones (Fase 8): un Job crea el esquema con el usuario dueño y la API arranca sin crear tablas,
+# lo que permite darle credenciales de mínimo privilegio (Vault). Si es false, la API crea el esquema.
+migraciones:
+  job: false
+
 # Observabilidad en Kubernetes (Fase 7): el OpenTelemetry Operator inyecta la instrumentación en la
 # API (sin cambiar su imagen) y la API envía métricas, logs y trazas al Collector por OTLP
 observabilidad:

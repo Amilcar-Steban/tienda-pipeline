@@ -60,3 +60,11 @@ def test_database_url_por_piezas(monkeypatch):
     assert database_url() == (
         "postgresql://app:p%40ss%3Aword%2F@tienda.abc123.us-east-1.rds.amazonaws.com:5432/app?sslmode=require"
     )
+
+
+def test_migrar_se_puede_repetir(client):
+    from app.main import migrar
+
+    migrar()  # el esquema ya existe: no falla ni duplica los productos de ejemplo
+    migrar()
+    assert len(client.get("/api/productos").json()["productos"]) == 3

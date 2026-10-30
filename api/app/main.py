@@ -56,12 +56,24 @@ ON CONFLICT (nombre) DO NOTHING;
 """
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Espera a la base de datos (hasta 30 s) y crea el esquema si no existe
-    pool.open(wait=True, timeout=30)
+# Crear el esquema al arrancar es cómodo (Compose, CI), pero exige que el usuario de la API pueda crear
+# tablas. Con credenciales de mínimo privilegio (Vault, Fase 8) se desactiva y el esquema lo crea aparte
+# el usuario dueño: python -m app.migrar (en Kubernetes, un Job del chart).
+ESQUEMA_AL_ARRANCAR = os.environ.get("ESQUEMA_AL_ARRANCAR", "true").lower() == "true"
+
+
+def migrar() -> None:
+    """Crea las tablas y los productos de ejemplo si no existen (se puede repetir sin efecto)."""
     with pool.connection() as conn:
         conn.execute(ESQUEMA)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Espera a la base de datos (hasta 30 s) y, salvo que se desactive, crea el esquema
+    pool.open(wait=True, timeout=30)
+    if ESQUEMA_AL_ARRANCAR:
+        migrar()
     yield
     pool.close()
 

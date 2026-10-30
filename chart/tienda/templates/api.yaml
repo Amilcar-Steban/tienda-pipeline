@@ -61,19 +61,11 @@ spec:
             - name: http
               containerPort: {{ .Values.api.puerto }}
           env:
-            - name: DB_HOST
-              value: {{ required "api.bd.host es obligatorio" .Values.api.bd.host | quote }}
-            - name: DB_NAME
-              value: {{ .Values.api.bd.nombre | quote }}
-            - name: DB_USER
-              value: {{ .Values.api.bd.usuario | quote }}
-            - name: DB_SSLMODE
-              value: {{ .Values.api.bd.sslmode | quote }}
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.api.bd.secreto }}
-                  key: password
+            {{- include "tienda.entornoBd" . | nindent 12 }}
+            {{- if .Values.migraciones.job }}
+            - name: ESQUEMA_AL_ARRANCAR # el esquema lo crea el Job de migraciones (migraciones.yaml)
+              value: "false"
+            {{- end }}
             - name: REDIS_URL
               value: {{ required "api.redisUrl es obligatorio" .Values.api.redisUrl | quote }}
             - name: APP_VERSION
