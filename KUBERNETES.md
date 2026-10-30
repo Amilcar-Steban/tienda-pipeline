@@ -19,11 +19,11 @@ eks/main.tf            capa "cluster" para tienda-infra (Fase 4): EKS 1.37, Grav
 Necesitas Docker, kind, kubectl y Helm 4 (instalación en "Prepara tu equipo" de la Fase 5).
 
 ```bash
-./kind/crear-lab.sh                       # kind 1.37 + Envoy Gateway + metrics-server, ~3 min
+./kind/crear-lab.sh                       # kind 1.37 + Calico + Envoy Gateway + metrics-server, ~3 min
 helm upgrade --install tienda chart/tienda -n tienda -f chart/tienda/values-kind.yaml \
   --set imagen.registro=ghcr.io/TU-USUARIO --rollback-on-failure --timeout 5m
 ./kind/abrir-tienda.sh                    # en otra terminal: http://tienda.localhost:8080
-./kind/probar.sh                          # 6 comprobaciones, incluidas red y Pod Security
+./kind/probar.sh                          # 7 comprobaciones, incluidas red (entrada y salida) y Pod Security
 kind delete cluster --name lab            # al terminar
 ```
 
@@ -42,7 +42,8 @@ porque crea el esquema al arrancar. En EKS los datos están en RDS.
 | Actualizar sin cortes | bucle de `curl` + `helm upgrade --set api.etiqueta=sha-…` | 0 errores (`maxUnavailable: 0`, readiness, `preStop`) |
 | Perder un nodo | bucle de `curl` + `kubectl drain lab-worker --ignore-daemonsets --delete-emptydir-data` | 0 errores: el PDB espera a que haya otra réplica lista |
 | La base se cae | `kubectl scale deploy/postgres --replicas=0 -n tienda` | la API sale del Service (readiness) pero **no se reinicia** (liveness por TCP) |
-| Red cerrada | `./kind/probar.sh` | desde otro namespace no se llega a la API; la API no sale a internet |
+| Red cerrada | `./kind/probar.sh` | desde otro namespace no se llega a la API; la API no sale a internet (con Calico: el CNI de kind no aplica la salida) |
+| Migraciones | `--set migraciones.job=true` | un Job (hook de Helm) crea el esquema con el dueño y la API arranca sin crear tablas (en prod, activado) |
 | Seguridad | `kubectl run x --image=busybox -n tienda` | rechazado por Pod Security `restricted` |
 | Autoescalado | carga con `hey` o un bucle y `kubectl get hpa -w` | el HPA sube réplicas al pasar del 70 % de CPU |
 

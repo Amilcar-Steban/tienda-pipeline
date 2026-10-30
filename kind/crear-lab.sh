@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Clúster kind de 3 nodos con lo necesario para la tienda: Gateway API + Envoy Gateway y
-# metrics-server (para el HPA). Idempotente: si el clúster existe, solo completa lo que falte.
+# Clúster kind de 3 nodos con lo necesario para la tienda: Calico (NetworkPolicies de entrada y salida),
+# Gateway API + Envoy Gateway y metrics-server (para el HPA). Idempotente: si el clúster existe, solo completa lo que falte.
 # Requiere: docker, kind, kubectl y helm 3.18+ o 4.
 set -Eeuo pipefail
 
 CLUSTER="${1:-lab}"
+CALICO="v3.33.0"
 ENVOY_GATEWAY="v1.9.3"
 METRICS_SERVER="3.14.0" # versión del chart (metrics-server 0.9)
 cd "$(dirname "$0")"
@@ -13,6 +14,11 @@ if ! grep -qx "$CLUSTER" <<<"$(kind get clusters)"; then
   kind create cluster --name "$CLUSTER" --config kind-config.yaml
 fi
 kubectl config use-context "kind-$CLUSTER"
+
+echo "== Calico $CALICO (los nodos no están Ready hasta que hay un CNI)"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/projectcalico/calico/$CALICO/manifests/calico.yaml" >/dev/null
+kubectl -n kube-system rollout status ds/calico-node --timeout 5m
+kubectl wait --for=condition=Ready nodes --all --timeout 3m
 
 echo "== Envoy Gateway $ENVOY_GATEWAY (incluye los CRDs de Gateway API)"
 helm upgrade --install eg oci://docker.io/envoyproxy/gateway-helm --version "$ENVOY_GATEWAY" \
