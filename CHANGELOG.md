@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.2.0...v0.3.0) (2026-10-30)
+
+
+### Features
+
+* **k8s:** chart de Helm, laboratorio en kind y capa EKS (Fase 5) ([042c6ea](https://github.com/Amilcar-Steban/tienda-pipeline/commit/042c6ea107d08cb2435779a0d559b2c0b1ad3d8d))
+* **obs:** la tienda observable con OpenTelemetry (Fase 7) ([7fd5930](https://github.com/Amilcar-Steban/tienda-pipeline/commit/7fd59303569800b9a0c750765bdd6dbb4dcf8e05))
+* **seg:** firma keyless, SAST y políticas de admisión (Fase 8) ([ba2b0e0](https://github.com/Amilcar-Steban/tienda-pipeline/commit/ba2b0e0297a5aa5dde670453fec6601b09869d77))
+
 ## [0.2.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/tienda-v0.1.0...tienda-v0.2.0) (2026-10-29)
 
 
