@@ -4,48 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tienda en contenedores</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1b2330; }
-    li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e3e7ee; }
-    button { padding: 6px 12px; cursor: pointer; }
-    small { color: #5b6678; }
-  </style>
+  <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
   <h1>Tienda en contenedores</h1>
   <p><small id="estado">Cargando…</small></p>
   <ul id="productos"></ul>
   <p>Pedidos totales: <b id="total">–</b></p>
-  <script>
-    const $ = (id) => document.getElementById(id);
-
-    async function cargar() {
-      const r = await fetch("/api/productos");
-      const datos = await r.json();
-      $("estado").textContent = "Datos servidos desde: " + datos.origen;
-      $("productos").replaceChildren(...datos.productos.map((p) => {
-        const li = document.createElement("li");
-        li.textContent = `${p.nombre} · ${p.precio.toFixed(2)} € · stock ${p.stock} `;
-        const b = document.createElement("button");
-        b.textContent = "Comprar 1";
-        b.onclick = () => comprar(p.id);
-        li.append(b);
-        return li;
-      }));
-      $("total").textContent = (await (await fetch("/api/pedidos")).json()).total;
-    }
-
-    async function comprar(id) {
-      const r = await fetch("/api/pedidos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ producto_id: id, cantidad: 1 }),
-      });
-      if (!r.ok) alert((await r.json()).detail);
-      cargar();
-    }
-
-    cargar().catch(() => { $("estado").textContent = "La API no responde"; });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

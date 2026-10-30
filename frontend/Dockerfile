@@ -6,4 +6,6 @@ USER 0
 # hadolint ignore=DL3017
 RUN apk upgrade --no-cache
 USER 101
-COPY --chown=101:101 index.html /usr/share/nginx/html/index.html
+COPY seguridad.conf /etc/nginx/conf.d/seguridad.conf
+# HTML, CSS y JS por separado: la CSP del proxy no permite scripts ni estilos en línea
+COPY --chown=101:101 index.html app.js estilos.css /usr/share/nginx/html/
