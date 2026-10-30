@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.5.0...v0.6.0) (2026-10-30)
+
+
+### Features
+
+* **api:** migraciones separadas para usar credenciales de mínimo privilegio ([bd1cace](https://github.com/Amilcar-Steban/tienda-pipeline/commit/bd1cacef3211ea777e39c0fed54e0dfae2af1b0d))
+* **ci:** el PR de producción solo para las releases ([c2ea8c4](https://github.com/Amilcar-Steban/tienda-pipeline/commit/c2ea8c434b2f8658055593e42fb3ceecf1b6368b))
+
+
+### Bug Fixes
+
+* **k8s:** Calico en el laboratorio de kind y sonda de salida ([e4c3cbc](https://github.com/Amilcar-Steban/tienda-pipeline/commit/e4c3cbc54fddda3b0e3ecc32a5eda1572cb8b72f))
+
 ## [0.5.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.4.0...v0.5.0) (2026-10-30)
 
 
