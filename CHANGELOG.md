@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.4.0...v0.5.0) (2026-10-30)
+
+
+### Features
+
+* **ci:** promoción a GitOps y releases con la GitHub App ([412125e](https://github.com/Amilcar-Steban/tienda-pipeline/commit/412125e0b773358d5139bbaa692ff912562edf52))
+* **k8s:** observabilidad en Kubernetes con el OpenTelemetry Operator ([efcf752](https://github.com/Amilcar-Steban/tienda-pipeline/commit/efcf752ecaad803642387225a5b4862e76e29b32))
+
+
+### Bug Fixes
+
+* **aws:** el despliegue parte de la task definition del servicio y sube todo el frontend ([baa77d1](https://github.com/Amilcar-Steban/tienda-pipeline/commit/baa77d1fc0f3e8d7db812b59e0a5ea2942d62a8b))
+* **seg:** cabeceras de seguridad en el proxy y CSS/JS fuera del HTML ([cebbf59](https://github.com/Amilcar-Steban/tienda-pipeline/commit/cebbf59446d03a6b49584f719dd7d8d972fdc6a9))
+* **seg:** Falco sin excepción por puertos y OpenBao para la base de datos ([47b499c](https://github.com/Amilcar-Steban/tienda-pipeline/commit/47b499c269c4ad0af3816d37a9769de8bceffe5f))
+
 ## [0.4.0](https://github.com/Amilcar-Steban/tienda-pipeline/compare/v0.3.0...v0.4.0) (2026-10-30)
 
 
