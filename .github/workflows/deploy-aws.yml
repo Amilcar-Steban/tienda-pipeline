@@ -54,10 +54,22 @@ jobs:
           cache-from: type=gha,scope=api-arm64
           cache-to: type=gha,mode=max,scope=api-arm64
 
+      # La task definition la crea la infraestructura (a mano en la Fase 3, con Terraform desde la
+      # Fase 4): el pipeline parte de la que usa el servicio y solo cambia la imagen. Con un JSON del
+      # repo, sus roles y su grupo de logs dejan de coincidir en cuanto la infraestructura cambia.
+      - name: Task definition actual del servicio
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+        run: |
+          actual=$(aws ecs describe-services --cluster "$ECS_CLUSTER" --services "$ECS_SERVICE" \
+            --query 'services[0].taskDefinition' --output text)
+          aws ecs describe-task-definition --task-definition "$actual" --query taskDefinition > task-definition.json
+
       - id: task
         uses: aws-actions/amazon-ecs-render-task-definition@8d79160660ad39c402a16e5fc7cd2a32e8f7d6b7 # v1.9.1
         with:
-          task-definition: aws/ecs/task-definition.json
+          task-definition: task-definition.json
           container-name: api
           image: ${{ steps.ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:sha-${{ github.sha }}
 
@@ -73,6 +85,8 @@ jobs:
         env:
           WEB_BUCKET: ${{ vars.WEB_BUCKET }}
           CF_DISTRIBUTION: ${{ vars.CF_DISTRIBUTION }}
+        # HTML, JS y CSS (la CSP no permite nada en línea); con --delete se retira lo que ya no existe
         run: |
-          aws s3 cp frontend/index.html "s3://${WEB_BUCKET}/index.html" --cache-control "no-cache"
-          aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION" --paths "/index.html"
+          aws s3 sync frontend/ "s3://${WEB_BUCKET}/" --delete --cache-control "no-cache" \
+            --exclude "*" --include "*.html" --include "*.js" --include "*.css"
+          aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION" --paths "/*"
