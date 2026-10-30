@@ -97,6 +97,14 @@ solo admite en el clúster las firmadas por el workflow `Imagen` en `main`. El w
 ejecuta Semgrep (resultados en la pestaña Security) y prueba las políticas. Detalles en
 [`seguridad/`](seguridad/README.md) y el [modelo de amenazas](docs/modelo-amenazas.md).
 
+## Plataforma (Fase 9)
+
+La tienda en el catálogo de Backstage (`catalog-info.yaml`, con la OpenAPI de `api/openapi.yaml`), su
+documentación como código (`mkdocs.yml` y `docs/`, para TechDocs) y la plataforma de autoservicio en
+`plataforma/`: la API `BaseDatos` de Crossplane, que crea una RDS con los estándares de la casa, y el
+alta automática de equipos con Kyverno. Cómo probarlo en kind, incluso contra un simulador de AWS:
+[plataforma/README.md](plataforma/README.md).
+
 ## Qué aprendí
 
 (Tamaño de cada imagen antes y después, resultado de Trivy, problemas que encontraste.)

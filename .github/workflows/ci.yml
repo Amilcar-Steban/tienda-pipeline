@@ -99,6 +99,7 @@ jobs:
           severity: CRITICAL,HIGH
           # Pods inseguros a propósito: son los casos de prueba de las políticas de Kyverno
           skip-dirs: seguridad/kyverno/pruebas
+          trivyignores: .trivyignore.yaml # excepciones acotadas y justificadas
           ignore-unfixed: true
           exit-code: "1"
       - name: Workflows (zizmor)

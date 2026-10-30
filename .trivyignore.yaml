@@ -1,0 +1,7 @@
+# Excepciones de Trivy, cada una acotada a sus archivos y con su porqué. Revisarlas al cambiar esos archivos.
+misconfigurations:
+  - id: KSV-0056
+    paths: ["plataforma/kyverno/alta-de-equipo.yaml"]
+    statement: >-
+      El controlador de Kyverno crea la NetworkPolicy de "denegar la entrada" de cada equipo nuevo
+      (Fase 9): necesita poder gestionar NetworkPolicies. Es un permiso de un controlador, no de una persona.
