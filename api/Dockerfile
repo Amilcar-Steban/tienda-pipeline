@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Etapas: base (común) → build (dependencias) → dev (recarga en caliente) → runtime (producción)
 
-FROM python:3.12-slim AS base
+FROM python:3.15-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 WORKDIR /app
